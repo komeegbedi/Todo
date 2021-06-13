@@ -1,6 +1,8 @@
 'use strict';
 
 let folderWrapper = document.querySelector(".main_body>div.row");
+let id = 0; // this ID is used to identify  a unique folder
+
 function createFolder(){
     let folderForm = document.querySelector(".folder-form form");
 
@@ -14,10 +16,10 @@ function createFolder(){
          /*
             Structure of  a folder 
 
-             <div class="col-12 folder">
-                <h3 class="folder-title">
+             <div class="col-12 folder" data-id = 1>
+                <h3 class="folder-title" data-id = 1>
                     <i class="far fa-folder"> </i>
-                        Folder Name
+                    <span> Folder Name </span>
                     <i class="fas fa-sort-down rotate"></i>
                 </h3>
 
@@ -42,11 +44,14 @@ function createFolder(){
 
             let folderDiv = document.createElement("DIV");
             folderDiv.setAttribute("class", "col-12 folder");
+            folderDiv.setAttribute("data-id" , id);
 
             folderDiv.appendChild(createFolderTitle(folderForm.folderName.value));
             folderDiv.appendChild(createFolderContent());
 
-            folderWrapper.appendChild(folderDiv);
+            folderWrapper.prepend(folderDiv);
+
+            id++; 
         }
         else{
             alert("Folder Name cannot be empty");
@@ -58,7 +63,7 @@ function createFolder(){
 /*
     This function creates the structure below:
 
-      <h3 class="folder-title">
+      <h3 class="folder-title" data-id = 1>
         <i class="far fa-folder"> </i>
         <span> Folder Name </span>
         <i class="fas fa-sort-down rotate"></i>
@@ -70,6 +75,7 @@ function createFolderTitle(folderName){
     //creates   <h3 class="folder-title"> </h3>
     let folderTitle = document.createElement("H3");
     folderTitle.setAttribute("class", "folder-title");
+    folderTitle.setAttribute("data-id", id);
 
     //creates  <i class="far fa-folder"> </i>
     let folderIcon = document.createElement("I");
@@ -150,17 +156,34 @@ function showFolder(){
   
     folderWrapper.addEventListener("click" , (e)=>{
 
-        console.log(e.target.tagName);
-        let folder = document.querySelector(".folder");
+    
+        let folders = document.querySelectorAll(".folder");
+        let folderClickedOn;
+        let id;
+    
+        if (e.target.className === "folder-title" ){
 
-        if (e.target.className === "folder-title" 
-            || e.target.parentElement.className === "folder-title"){
+            id = e.target.getAttribute('data-id');
+        }
+        else if (e.target.parentElement.className === "folder-title"){
 
-            let icon = folder.querySelector("i.fa-sort-down");
-            let folderContent = folder.querySelector(".folder-content");
+            id = e.target.parentElement.getAttribute('data-id');
+        }
+
+     
+
+       if(id !== undefined){
+        
+            folders = Array.from(folders);
+            //find the folder that matches that ID
+            folderClickedOn =  folders.find((folder) =>folder.getAttribute('data-id') === id);
+
+            let icon = folderClickedOn.querySelector("i.fa-sort-down");
+            let folderContent = folderClickedOn.querySelector(".folder-content");
             icon.classList.toggle("rotate");
             folderContent.classList.toggle("show");
-        }
+       } 
+
     });
 
 }
