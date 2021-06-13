@@ -1,0 +1,121 @@
+body{
+    background: #352f5b;
+    color: #fff;
+    font-family: 'Noto Sans JP', sans-serif;
+}
+
+
+.main_body{
+    margin-top: 100px;
+}
+
+.main_body > div.row{
+  align-items: center;
+  justify-content: center;
+}
+
+.folder{
+   box-shadow:  0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+   width: 60%;
+   padding:  30px;
+   border-radius: 15px;
+}
+.folder h3{
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 22px;
+    font-family: 600;
+    letter-spacing: 2px;
+    cursor: pointer;
+}
+.folder h3 i.fa-sort-down{
+    transition: all 0.1s ease-in-out 0.1s;
+}
+
+.folder h3 i.rotate{
+    transform: rotate(-90deg);
+}
+
+.folder-content{
+    -webkit-font-smoothing: antialiased;
+    transition: all 0.35s ease;
+    visibility: hidden;
+    opacity: 0;
+    height: 0;
+}
+
+.folder-content.show{
+    visibility: visible;
+    opacity: 1;
+    height: auto;
+}
+
+div.list-content ul{
+    margin-top: 30px;
+    padding: 20px;
+
+}
+div.list-content li{
+    position: relative;
+    letter-spacing: 2px;
+    background: #423a6f;
+    margin-bottom: 20px;
+    padding: 20px;
+    border-radius: 5px;
+}
+
+div.list-content li i{
+    position: absolute;
+    right: 12px;
+} 
+
+.folder form{
+    display: flex;
+   align-items: center;
+  justify-content: center;
+}
+
+form input{
+    border-radius: 5px;
+    padding: .375rem .75rem;
+    background-color: transparent;
+    border: 1px solid rgba(0, 0, 0, 0.7);
+    margin-right: 10px;
+    width: 40%;
+}
+
+form input:-ms-input-placeholder{
+    color: #fff;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    text-align: center;
+}
+form input::-webkit-input-placeholder{
+    color: #fff;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    text-align: center;
+}
+form input::placeholder{
+    color: #fff;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    text-align: center;
+}
+
+.create{
+    margin-top: 40px;
+    width: 60%;
+}
+.create div{
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: center;
+}
+
+.create form input{
+    width: auto;
+}
