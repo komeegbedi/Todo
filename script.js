@@ -51,6 +51,7 @@ function createFolder(){
 
             folderWrapper.prepend(folderDiv);
 
+            folderForm.folderName.value = "";
             id++; 
         }
         else{
@@ -188,5 +189,30 @@ function showFolder(){
 
 }
 
+function createTodo(){
+    let form = document.querySelector(".todo-form form");
+    let ul = document.querySelector(".todoList");
+
+    form.addEventListener("submit" , e =>{
+
+        e.preventDefault();
+
+        if(form.item.value.length !== 0){
+
+            let li = document.createElement("LI");
+            let icon = document.createElement("I");
+            icon.setAttribute("class", "far fa-trash-alt");
+
+            li.innerHTML = form.item.value;
+            form.item.value = "";
+
+            li.appendChild(icon);
+
+            ul.appendChild(li);
+        }
+    });
+}
+
 createFolder();
 showFolder();
+createTodo();

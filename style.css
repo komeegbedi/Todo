@@ -53,12 +53,20 @@ body{
     height: auto;
 }
 
-div.list-content ul{
+ul{
     margin-top: 30px;
     padding: 20px;
 
 }
-div.list-content li{
+ul.todoList{
+    width: 60%;
+}
+
+ul.todoList li{
+     background: rgb(255 82 82 / 45%);
+}
+
+li{
     position: relative;
     letter-spacing: 2px;
     background: #423a6f;
@@ -67,7 +75,7 @@ div.list-content li{
     border-radius: 5px;
 }
 
-div.list-content li i{
+li i{
     position: absolute;
     right: 12px;
 } 
@@ -111,7 +119,7 @@ form input::placeholder{
 }
 
 .create{
-    margin-top: 40px;
+    margin-top: 0;
     width: 60%;
 }
 .create div{
