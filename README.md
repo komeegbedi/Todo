@@ -5,4 +5,4 @@ This project is not your typical todo list app
 
 * With this app you can group your todo's into a folder 
 
-![Screenshot](Screenshot.PNG)
+![Screenshot](screenshot.PNG)
