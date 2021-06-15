@@ -3,6 +3,8 @@
 let folderWrapper = document.querySelector(".main_body>div.row");
 let id = 0; // this ID is used to identify  a unique folder
 
+let changesHasBeenMade = false; // keeps track if chnages has been made in the webpage
+
 function createFolder(){
     let folderForm = document.querySelector(".folder-form form");
 
@@ -53,6 +55,8 @@ function createFolder(){
 
             folderForm.folderName.value = "";
             id++; 
+
+            changesHasBeenMade = true;
         }
         else{
             alert("Folder Name cannot be empty");
@@ -96,7 +100,7 @@ function createFolderTitle(folderName){
 
 
     return folderTitle;
-}
+}//createFolderTitle
 
 /*
  This function creates this html structure 
@@ -112,10 +116,11 @@ function createFolderTitle(folderName){
             <button type="submit" class="btn btn-dark"><i class="fas fa-plus"></i></button>
         </form>
     </div>
-    */
+ */
 
 function createFolderContent(){
 
+    
     let folderContent = document.createElement("DIV");
     folderContent.setAttribute("class" , "folder-content");
 
@@ -126,10 +131,12 @@ function createFolderContent(){
     
     let form = document.createElement("FORM");
     form.setAttribute("action" , "#");
+    form.setAttribute("data-id" , id);
     
 
     let input = document.createElement("INPUT");
     input.setAttribute("type" , "text");
+    input.setAttribute("name", "userTodo");
     input.setAttribute("placeholder", "Add Todo to this folder");
 
     let btn = document.createElement("BUTTON");
@@ -150,45 +157,59 @@ function createFolderContent(){
     folderContent.appendChild(form);
 
     return folderContent;
-}
+}//createFolderContent
 
 
+//this function toggles the show class in order to hide or show folder contents 
 function showFolder(){
   
+    //add an event listener to the wrapper to see when a folder is clicked
     folderWrapper.addEventListener("click" , (e)=>{
 
     
         let folders = document.querySelectorAll(".folder");
         let folderClickedOn;
         let id;
-    
-        if (e.target.className === "folder-title" ){
+        
+        //gets the id of the folder that was clicked 
+        //if the event that was clicked does not have it, we check the parent 
+        // the reasion why we check the parent is because of the  code structure below
+
+        /*
+         <h3 class="folder-title" data-id = 1>
+            <i class="far fa-folder"> </i>
+            <span> Folder Name </span>
+            <i class="fas fa-sort-down rotate"></i>
+         </h3>
+        */
+
+         // it possible that just the span or i tag could be the event but we want the h3 tag because of the data-id
+        if (e.target.className === "folder-title" ){ 
 
             id = e.target.getAttribute('data-id');
+            folderClickedOn = e.target.parentElement;
         }
         else if (e.target.parentElement.className === "folder-title"){
 
             id = e.target.parentElement.getAttribute('data-id');
-        }
+            folderClickedOn = e.target.parentElement.parentElement;
+        }//if-else if
 
      
-
+        //if we get the data-id, we look for the folder that has that ID 
        if(id !== undefined){
-        
-            folders = Array.from(folders);
-            //find the folder that matches that ID
-            folderClickedOn =  folders.find((folder) =>folder.getAttribute('data-id') === id);
 
             let icon = folderClickedOn.querySelector("i.fa-sort-down");
             let folderContent = folderClickedOn.querySelector(".folder-content");
             icon.classList.toggle("rotate");
             folderContent.classList.toggle("show");
-       } 
+       }//if
 
     });
 
 }
 
+//this function creates todo list that are not in folders 
 function createTodo(){
     let form = document.querySelector(".todo-form form");
     let ul = document.querySelector(".todoList");
@@ -209,10 +230,56 @@ function createTodo(){
             li.appendChild(icon);
 
             ul.appendChild(li);
+            changesHasBeenMade = true;
         }
     });
 }
 
-createFolder();
-showFolder();
-createTodo();
+//this function creates todos that are in folders
+function createFolderTodo(){
+
+    folderWrapper.addEventListener("submit" , e=>{
+        e.preventDefault();
+        
+        let folderID = e.target.getAttribute("data-id");
+        let folderUl;
+
+        if(folderID !== null){
+            
+            folderUl = e.target.parentElement.querySelector("ul");
+            let input = e.target.userTodo.value;
+
+            let li = document.createElement("LI");
+            let deleteIcon = document.createElement("I");
+            deleteIcon.setAttribute("class", "far fa-trash-alt");
+          
+            if(input.length !== 0){
+                li.innerHTML = input;
+                li.appendChild(deleteIcon);
+
+                folderUl.appendChild(li);
+                e.target.userTodo.value = "";
+            }
+        }
+        
+    });
+}
+
+function main(){
+    createFolder();
+    showFolder();
+    createTodo();
+    createFolderTodo();
+
+    
+    window.onbeforeunload = function () {
+        if (!changesHasBeenMade) {
+            return;
+        }
+
+        return "Leaving this page will reset the todo list";
+    };
+    
+}
+
+main();
