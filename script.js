@@ -1,6 +1,6 @@
 'use strict';
 
-let folderWrapper = document.querySelector(".main_body>div.row");
+let folderWrapper = document.querySelector(".main_body div.todos");
 let id = 0; // this ID is used to identify  a unique folder
 
 let changesHasBeenMade = false; // keeps track if chnages has been made in the webpage
@@ -45,14 +45,15 @@ function createFolder(){
             </div>
         */
 
-            let folderDiv = document.createElement("DIV");
-            folderDiv.setAttribute("class", "col-12 folder");
-            folderDiv.setAttribute("data-id" , id);
+            let folderDiv =`
+                <div class="col-12 folder" data-id = ${id}>
 
-            folderDiv.appendChild(createFolderTitle(folderForm.folderName.value));
-            folderDiv.appendChild(createFolderContent());
+                    ${createFolderTitle(folderForm.folderName.value.trim())}
+                    ${createFolderContent()}
 
-            folderWrapper.prepend(folderDiv);
+                </div>`;
+
+            folderWrapper.prepend(stringToHTML(folderDiv));
 
             folderForm.folderName.value = "";
             id++; 
@@ -66,6 +67,17 @@ function createFolder(){
     });
 }
 
+/**
+ * Convert a template string into HTML DOM nodes
+ * @param  {String} str The template string
+ * @return {Node}       The template HTML
+ */
+var stringToHTML = function (str) {
+
+    let doc = new DOMParser().parseFromString(str , "text/html");
+    return doc.body.firstChild;
+};
+
 /*
     This function creates the structure below:
 
@@ -78,29 +90,14 @@ function createFolder(){
 */
 function createFolderTitle(folderName){
 
-    //creates   <h3 class="folder-title"> </h3>
-    let folderTitle = document.createElement("H3");
-    folderTitle.setAttribute("class", "folder-title");
-    folderTitle.setAttribute("data-id", id);
-
-    //creates  <i class="far fa-folder"> </i>
-    let folderIcon = document.createElement("I");
-    folderIcon.setAttribute("class", "far fa-folder");
-
-    //creates <span> Folder Name </span>
-    let nameOfFolder = document.createElement("SPAN");
-    nameOfFolder.innerHTML = ` ${folderName}`;
-
-    //creates <i class="fas fa-sort-down rotate"></i>
-    let dropDownIcon = document.createElement("I");
-    dropDownIcon.setAttribute("class", "fas fa-sort-down rotate");
-
-    folderTitle.appendChild(folderIcon);
-    folderTitle.appendChild(nameOfFolder);
-    folderTitle.appendChild(dropDownIcon);
-
-
-    return folderTitle;
+    let template = `
+         <h3 class="folder-title" data-id = ${id}>
+            <i class="far fa-folder"> </i>
+            <span>${folderName}</span>
+            <i class="fas fa-sort-down rotate"></i>
+        </h3>
+    `
+    return template;
 }//createFolderTitle
 
 /*
@@ -121,51 +118,26 @@ function createFolderTitle(folderName){
 
 function createFolderContent(){
 
-    
-    let folderContent = document.createElement("DIV");
-    folderContent.setAttribute("class" , "folder-content");
+    let template = `
+           <div class="folder-content">
+                <div class="list-content">
+                    <ul></ul>
+                </div>
 
-    let listContent = document.createElement("DIV");
-    listContent.setAttribute("class" , "list-content");
+                <form action="#" data-id = ${id}>
+                    <input type="text" name="userTodo" id="" placeholder="Add Todo to this folder">
+                    <button type="submit" class="btn btn-dark"><i class="fas fa-plus"></i></button>
+                </form>
+            </div>
+    `;
 
-    let ul = document.createElement("UL");
-    
-    let form = document.createElement("FORM");
-    form.setAttribute("action" , "#");
-    form.setAttribute("data-id" , id);
-    
-
-    let input = document.createElement("INPUT");
-    input.setAttribute("type" , "text");
-    input.setAttribute("name", "userTodo");
-    input.setAttribute("placeholder", "Add Todo to this folder");
-
-    let btn = document.createElement("BUTTON");
-    btn.setAttribute("type" , "submit");
-    btn.setAttribute("class" , "btn btn-dark");
-
-    let btnIcon = document.createElement("I");
-    btnIcon.setAttribute("class", "fas fa-plus");
-
-    btn.appendChild(btnIcon);
-
-    form.appendChild(input);
-    form.appendChild(btn);
-
-    listContent.appendChild(ul);
-    folderContent.appendChild(listContent);
-
-    folderContent.appendChild(form);
-
-    return folderContent;
+    return template
 }//createFolderContent
 
 
 //this function toggles the show class in order to hide or show folder contents 
 function showFolder(tag){
-  
-    //add an event listener to the wrapper to see when a folder is clicked
-      
+   
         //gets the id of the folder that was clicked 
         //if the event that was clicked does not have it, we check the parent 
         // the reasion why we check the parent is because of the  code structure below
@@ -177,6 +149,7 @@ function showFolder(tag){
             <i class="fas fa-sort-down rotate"></i>
          </h3>
         */
+
         let icon = tag.querySelector("i.fa-sort-down");
         let folderContent = tag.parentElement.querySelector(".folder-content");
         icon.classList.toggle("rotate");
@@ -194,8 +167,9 @@ function createRegularTodo(){
         let li = __createTodo(form.item.value); 
 
         if(li !== null){
-            ul.appendChild(li);
+            ul.innerHTML += li;
             changesHasBeenMade = true;
+            form.item.value = ""
         }
 
     });
@@ -218,7 +192,7 @@ function createFolderTodo(){
 
             if(li !== null){
     
-                folderUl.appendChild(li);
+                folderUl.innerHTML += li;
                 e.target.userTodo.value = "";
             }
 
@@ -229,36 +203,35 @@ function createFolderTodo(){
 
 
 function __createTodo(value){
-    let li = null;
+    let template = null;
+
+    value = value.trim();
 
     if(value.length !== 0){
 
-        li = document.createElement("LI");
-        let button = document.createElement("BUTTON");
-        button.setAttribute("class", "btn btn-dark deletebtn");
-        let icon = document.createElement("I");
-        icon.setAttribute("class", "far fa-trash-alt");
-
-        li.innerHTML = value;
-        
-        button.appendChild(icon);
-        li.appendChild(button);
+        template = `
+            <li> 
+                ${value}
+                <button class="btn btn-dark deletebtn">
+                    <i class="far fa-trash-alt"></i>
+                </button>
+            </li>
+        `
     }
     else{
         alert('Form is empty');
     }
 
-    return li;
+    return template;
 }
 
 function main(){
+
     createFolder();
     createRegularTodo();
     createFolderTodo();
 
     folderWrapper.addEventListener("click", (e) => {
-
-        
 
         if (e.target.className === "folder-title") {
 
@@ -273,19 +246,18 @@ function main(){
             e.target.parentElement.remove();
         }
         else if (e.target.parentElement.classList.contains("deletebtn")){
-           
             e.target.parentElement.parentElement.remove();
         }
 
     });
 
-    window.onbeforeunload = function () {
-        if (!changesHasBeenMade) {
-            return;
-        }
+    // window.onbeforeunload = function () {
+    //     if (!changesHasBeenMade) {
+    //         return;
+    //     }
 
-        return "Leaving this page will reset the todo list";
-    };
+    //     return "Leaving this page will reset the todo list";
+    // };
     
 }
 
