@@ -75,7 +75,7 @@ li{
     border-radius: 5px;
 }
 
-li i{
+li button{
     position: absolute;
     right: 12px;
     cursor: pointer;

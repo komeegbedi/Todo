@@ -12,6 +12,7 @@ function createFolder(){
 
         e.preventDefault();
 
+
         //ensure folder name is not empty
         if(folderForm.folderName.value.length !== 0){
 
@@ -161,16 +162,10 @@ function createFolderContent(){
 
 
 //this function toggles the show class in order to hide or show folder contents 
-function showFolder(){
+function showFolder(tag){
   
     //add an event listener to the wrapper to see when a folder is clicked
-    folderWrapper.addEventListener("click" , (e)=>{
-
-    
-        let folders = document.querySelectorAll(".folder");
-        let folderClickedOn;
-        let id;
-        
+      
         //gets the id of the folder that was clicked 
         //if the event that was clicked does not have it, we check the parent 
         // the reasion why we check the parent is because of the  code structure below
@@ -182,56 +177,27 @@ function showFolder(){
             <i class="fas fa-sort-down rotate"></i>
          </h3>
         */
-
-         // it possible that just the span or i tag could be the event but we want the h3 tag because of the data-id
-        if (e.target.className === "folder-title" ){ 
-
-            id = e.target.getAttribute('data-id');
-            folderClickedOn = e.target.parentElement;
-        }
-        else if (e.target.parentElement.className === "folder-title"){
-
-            id = e.target.parentElement.getAttribute('data-id');
-            folderClickedOn = e.target.parentElement.parentElement;
-        }//if-else if
-
-     
-        //if we get the data-id, we look for the folder that has that ID 
-       if(id !== undefined){
-
-            let icon = folderClickedOn.querySelector("i.fa-sort-down");
-            let folderContent = folderClickedOn.querySelector(".folder-content");
-            icon.classList.toggle("rotate");
-            folderContent.classList.toggle("show");
-       }//if
-
-    });
-
+        let icon = tag.querySelector("i.fa-sort-down");
+        let folderContent = tag.parentElement.querySelector(".folder-content");
+        icon.classList.toggle("rotate");
+        folderContent.classList.toggle("show");
 }
 
 //this function creates todo list that are not in folders 
-function createTodo(){
+function createRegularTodo(){
     let form = document.querySelector(".todo-form form");
     let ul = document.querySelector(".todoList");
 
     form.addEventListener("submit" , e =>{
 
         e.preventDefault();
+        let li = __createTodo(form.item.value); 
 
-        if(form.item.value.length !== 0){
-
-            let li = document.createElement("LI");
-            let icon = document.createElement("I");
-            icon.setAttribute("class", "far fa-trash-alt");
-
-            li.innerHTML = form.item.value;
-            form.item.value = "";
-
-            li.appendChild(icon);
-
+        if(li !== null){
             ul.appendChild(li);
             changesHasBeenMade = true;
         }
+
     });
 }
 
@@ -243,35 +209,76 @@ function createFolderTodo(){
         
         let folderID = e.target.getAttribute("data-id");
         let folderUl;
+        let li;
 
         if(folderID !== null){
             
             folderUl = e.target.parentElement.querySelector("ul");
-            let input = e.target.userTodo.value;
+            li = __createTodo(e.target.userTodo.value);
 
-            let li = document.createElement("LI");
-            let deleteIcon = document.createElement("I");
-            deleteIcon.setAttribute("class", "far fa-trash-alt");
-          
-            if(input.length !== 0){
-                li.innerHTML = input;
-                li.appendChild(deleteIcon);
-
+            if(li !== null){
+    
                 folderUl.appendChild(li);
                 e.target.userTodo.value = "";
             }
+
         }
         
     });
 }
 
+
+function __createTodo(value){
+    let li = null;
+
+    if(value.length !== 0){
+
+        li = document.createElement("LI");
+        let button = document.createElement("BUTTON");
+        button.setAttribute("class", "btn btn-dark deletebtn");
+        let icon = document.createElement("I");
+        icon.setAttribute("class", "far fa-trash-alt");
+
+        li.innerHTML = value;
+        
+        button.appendChild(icon);
+        li.appendChild(button);
+    }
+    else{
+        alert('Form is empty');
+    }
+
+    return li;
+}
+
 function main(){
     createFolder();
-    showFolder();
-    createTodo();
+    createRegularTodo();
     createFolderTodo();
 
-    
+    folderWrapper.addEventListener("click", (e) => {
+
+        
+
+        if (e.target.className === "folder-title") {
+
+            showFolder(e.target);
+        }
+        else if (e.target.parentElement.className === "folder-title"){
+            showFolder(e.target.parentElement);
+        }
+
+        //check for the delete btn
+        else if (e.target.classList.contains("deletebtn")){
+            e.target.parentElement.remove();
+        }
+        else if (e.target.parentElement.classList.contains("deletebtn")){
+           
+            e.target.parentElement.parentElement.remove();
+        }
+
+    });
+
     window.onbeforeunload = function () {
         if (!changesHasBeenMade) {
             return;
