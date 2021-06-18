@@ -7,4 +7,4 @@ Check out the do list app: https://komeegbedi.github.io/Todo-List/
 
 * With this app you can group your todo's into a folder 
 
-![Screenshot](screenshot.PNG)
+![Sample Screenshot](screenshot.PNG)
