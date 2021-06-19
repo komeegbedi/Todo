@@ -78,16 +78,6 @@ var stringToHTML = function (str) {
     return doc.body.firstChild;
 };
 
-/*
-    This function creates the structure below:
-
-      <h3 class="folder-title" data-id = 1>
-        <i class="far fa-folder"> </i>
-        <span> Folder Name </span>
-        <i class="fas fa-sort-down rotate"></i>
-    </h3>
-
-*/
 function createFolderTitle(folderName){
 
     let template = `
@@ -123,22 +113,10 @@ function createFolderContent(){
 //this function toggles the show class in order to hide or show folder contents 
 function showFolder(tag){
    
-        //gets the id of the folder that was clicked 
-        //if the event that was clicked does not have it, we check the parent 
-        // the reasion why we check the parent is because of the  code structure below
-
-        /*
-         <h3 class="folder-title" data-id = 1>
-            <i class="far fa-folder"> </i>
-            <span> Folder Name </span>
-            <i class="fas fa-sort-down rotate"></i>
-         </h3>
-        */
-
-        let icon = tag.querySelector("i.fa-sort-down");
-        let folderContent = tag.parentElement.querySelector(".folder-content");
-        icon.classList.toggle("rotate");
-        folderContent.classList.toggle("show");
+    let icon = tag.querySelector("i.fa-sort-down");
+    let folderContent = tag.parentElement.querySelector(".folder-content");
+    icon.classList.toggle("rotate");
+    folderContent.classList.toggle("show");
 }
 
 //this function creates todo list that are not in folders 
@@ -213,15 +191,16 @@ function __createTodo(value){
 
 function searchTodo(term){
 
-
     //get todos not in folders, folders names , todo in folders
-
     let content = document.querySelector('.todos');
 
+    //this adds the d-none class to the todos that don't have the term being searched for
     Array.from(content.children)
     .filter(todo => todo.classList.contains('todoList') || !todo.textContent.toLowerCase().includes(term))
     .forEach(todo => {
         
+        //since the filter method will take the ul.todoList as one if it contains the term
+        //we need to search the li's in the ul individually 
         if(todo.classList.contains('todoList')){
 
             //check for the li that  does not
@@ -237,13 +216,13 @@ function searchTodo(term){
     });
 
 
+    //this removes the d-none class from the todos that have the term being searched for 
     Array.from(content.children)
     .filter(todo => todo.classList.contains('todoList') || todo.textContent.toLowerCase().includes(term))
     .forEach(todo => {
 
         if (todo.classList.contains('todoList')) { 
 
-            //check for the li that  does not
             Array.from(todo.children)
                 .filter(li => li.textContent.toLowerCase().includes(term))
                 .forEach(li => {
@@ -289,6 +268,7 @@ function main(){
         let term = searchInput.value.trim().toLowerCase();
         searchTodo(term);
     });
+
 
     window.onbeforeunload = function () {
         if (!changesHasBeenMade) {
