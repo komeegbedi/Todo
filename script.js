@@ -12,14 +12,14 @@ function createFolder(){
 
         e.preventDefault();
 
-
         //ensure folder name is not empty
-        if(folderForm.folderName.value.length !== 0){
+        if(folderForm.folderName.value.length){
 
          /*
             Structure of  a folder 
 
              <div class="col-12 folder" data-id = 1>
+             
                 <h3 class="folder-title" data-id = 1>
                     <i class="far fa-folder"> </i>
                     <span> Folder Name </span>
@@ -55,7 +55,7 @@ function createFolder(){
 
             folderWrapper.prepend(stringToHTML(folderDiv));
 
-            folderForm.folderName.value = "";
+            folderForm.reset();
             id++; 
 
             changesHasBeenMade = true;
@@ -96,25 +96,10 @@ function createFolderTitle(folderName){
             <span>${folderName}</span>
             <i class="fas fa-sort-down rotate"></i>
         </h3>
-    `
+    `;
     return template;
 }//createFolderTitle
 
-/*
- This function creates this html structure 
-    <div class="folder-content">
-        <div class="list-content">
-            <ul>
-            
-            </ul>
-        </div>
-
-        <form action="#">
-            <input type="text" name="" id="" placeholder="Add Todo to this folder">
-            <button type="submit" class="btn btn-dark"><i class="fas fa-plus"></i></button>
-        </form>
-    </div>
- */
 
 function createFolderContent(){
 
@@ -169,7 +154,7 @@ function createRegularTodo(){
         if(li !== null){
             ul.innerHTML += li;
             changesHasBeenMade = true;
-            form.item.value = ""
+            form.reset();
         }
 
     });
@@ -193,7 +178,7 @@ function createFolderTodo(){
             if(li !== null){
     
                 folderUl.innerHTML += li;
-                e.target.userTodo.value = "";
+                e.target.reset();
             }
 
         }
@@ -207,7 +192,7 @@ function __createTodo(value){
 
     value = value.trim();
 
-    if(value.length !== 0){
+    if(value.length){
 
         template = `
             <li> 
@@ -216,13 +201,59 @@ function __createTodo(value){
                     <i class="far fa-trash-alt"></i>
                 </button>
             </li>
-        `
+        `;
     }
     else{
         alert('Form is empty');
     }
 
     return template;
+}
+
+
+function searchTodo(term){
+
+
+    //get todos not in folders, folders names , todo in folders
+
+    let content = document.querySelector('.todos');
+
+    Array.from(content.children)
+    .filter(todo => todo.classList.contains('todoList') || !todo.textContent.toLowerCase().includes(term))
+    .forEach(todo => {
+        
+        if(todo.classList.contains('todoList')){
+
+            //check for the li that  does not
+            Array.from(todo.children)
+            .filter(li => !li.textContent.toLowerCase().includes(term))
+            .forEach(li => {
+                li.classList.add('d-none');
+            });
+        }
+        else{
+            todo.classList.add('d-none');
+        }
+    });
+
+
+    Array.from(content.children)
+    .filter(todo => todo.classList.contains('todoList') || todo.textContent.toLowerCase().includes(term))
+    .forEach(todo => {
+
+        if (todo.classList.contains('todoList')) { 
+
+            //check for the li that  does not
+            Array.from(todo.children)
+                .filter(li => li.textContent.toLowerCase().includes(term))
+                .forEach(li => {
+                    li.classList.remove('d-none');
+                });
+        }
+        else {
+            todo.classList.remove('d-none');
+        }
+    });
 }
 
 function main(){
@@ -251,13 +282,21 @@ function main(){
 
     });
 
-    // window.onbeforeunload = function () {
-    //     if (!changesHasBeenMade) {
-    //         return;
-    //     }
+    let searchInput = document.querySelector('.search input');
 
-    //     return "Leaving this page will reset the todo list";
-    // };
+    searchInput.addEventListener('keyup' , e => {
+
+        let term = searchInput.value.trim().toLowerCase();
+        searchTodo(term);
+    });
+
+    window.onbeforeunload = function () {
+        if (!changesHasBeenMade) {
+            return;
+        }
+
+        return "Leaving this page will reset the todo list";
+    };
     
 }
 

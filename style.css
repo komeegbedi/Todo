@@ -131,6 +131,11 @@ form input::placeholder{
     text-align: center;
 }
 
+.todoForms{
+    justify-content: center;
+    align-items: center;
+}
+
 .create{
     margin-top: 0;
     width: 60%;

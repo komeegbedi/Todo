@@ -14,7 +14,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300&display=swap" rel="stylesheet">
     
-        <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     
@@ -23,30 +23,44 @@
         <div class="row">
             <h2 class="display-2 text-center"> Todo List</h2>
             
-            <form action="" class="search">
+            <form action="#" class="search">
                 <input type="text" name="search" placeholder="Search Todos" class="form-control">
                 <button type="submit" class="btn btn-dark"><i class="fas fa-search"></i></button>
             </form>
         </div>
 
        <div class="row todos">
-            <ul class="todoList"></ul>
-            
+
+           <!-- Folders are added here-->
+
+            <ul class="todoList">
+                <!-- Regular Todo goes here-->
+            </ul>
+        
+       </div>
+
+       <div class="row todoForms">
+
             <div class="create col-12">
-               <div class="todo-form">
+            
+                <!-- Form for regular to do -->
+                <div class="todo-form">
                     <form action="#">
                         <input type="text" name="item" id="" placeholder="Create Todo" required>
                         <button type="submit" class="btn btn-dark"><i class="fas fa-plus"></i></button>
                     </form>
-               </div>
+                </div>
+            
+                <!-- Form to create a folder-->
                 <div class="folder-form">
                     <form action="#">
                         <input type="text" name="folderName" id="" placeholder="Create Folder" required>
                         <button class="btn btn-dark"><i class="fas fa-plus"></i></button>
                     </form>
-                    
                 </div>
+            
             </div>
+
        </div>
     </section>
     <script src="script.js"></script>
